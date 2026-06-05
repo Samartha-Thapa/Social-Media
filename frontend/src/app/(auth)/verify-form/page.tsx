@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 // import { cookies } from 'next/headers'
 import { useRouter, useSearchParams } from 'next/navigation';
+import { codeVerification } from '@/app/api/auth';
 
 const VerifyForm = () => {
     const [code, setCode] = useState("");
@@ -17,23 +18,16 @@ const VerifyForm = () => {
         setError("");
 
         try{
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/verifyCode`, {
-                method: "POST",
-                credentials: 'include',
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({email,code})
-            });
-            const data = await res.json();
+            const data = await codeVerification({email,code});
+            localStorage.setItem('token', data.token);
 
-            if(!res.ok) {
+            if(!data) {
                 setError(data.message || "Verification failed");
                 setLoading(false);
                 return;
             }
             setTimeout(() => {
-                router.push('/dashboard');
+                router.push('/home');
             }, 2000);
         }
         catch(err){

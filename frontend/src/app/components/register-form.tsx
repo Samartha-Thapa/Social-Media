@@ -16,10 +16,11 @@ import {
   FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { ChangeEvent, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { registerUser } from "../api/auth"
 import { FiEye, FiEyeOff } from "react-icons/fi"
+import { fetchUserData } from "../api/api"
 
 export function RegisterForm({
   className,
@@ -71,7 +72,7 @@ export function RegisterForm({
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -164,8 +165,11 @@ export function RegisterForm({
                       </button>
                 </div>
               </Field>
+              {error && (
+                <p className="text-sm text-red-500">{error}</p>
+              )}
               <Field>
-                <Button type="submit">Register</Button>
+                <Button type="submit">{loading ? "Registering..." : "Register"}</Button>
                 <FieldDescription className="text-center">
                   Already have an account? <a href="#">Sign In</a>
                 </FieldDescription>
@@ -175,7 +179,7 @@ export function RegisterForm({
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
+        By clicking continue, you agree to our <a href="/login">Terms of Service</a>{" "}
         and <a href="#">Privacy Policy</a>.
       </FieldDescription>
     </div>
